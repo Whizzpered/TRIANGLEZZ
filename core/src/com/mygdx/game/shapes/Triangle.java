@@ -37,17 +37,17 @@ public class Triangle {
         reset(true);
     }
 
-    public void setAngle(double angle){
+    public void setAngle(double angle) {
         this.angle = angle;
     }
 
 
     // reseting all rotating and if @rotate == true rotate again
     public void reset(boolean rotate) {
-        a = new Point(center.x, center.y -(int)gr);
+        a = new Point(center.x, center.y - (int) gr);
         b = new Point(center.x + (int) Math.round(gr * Math.sin(Math.PI / 3)), center.y + (int) Math.round(gr * Math.cos(Math.PI / 3)));
         c = new Point(center.x - (int) Math.round(gr * Math.sin(Math.PI / 3)), center.y + (int) Math.round(gr * Math.cos(Math.PI / 3)));
-        if(rotate)rotate(angle);
+        if (rotate) rotate(angle);
     }
 
     // Boring mathematical formules

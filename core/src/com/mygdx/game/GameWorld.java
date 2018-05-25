@@ -35,7 +35,7 @@ public class GameWorld {
         int starty = y;
         int startx = x;
         for (int i = 0; i < n; i++) {
-            Triangle tr = new Triangle(startx + (int)(3 * (sr) / Math.sqrt(3)) * (i + 1), starty);
+            Triangle tr = new Triangle(startx + (int) (3 * (sr) / Math.sqrt(3)) * (i + 1), starty);
             tr.st = sr;
             tr.angle = 0;
             tr.reset(true);
