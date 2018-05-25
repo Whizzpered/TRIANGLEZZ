@@ -10,9 +10,10 @@ import java.util.ArrayList;
  */
 public class GameWorld {
 
-    public ArrayList<Triangle> trias = new ArrayList<Triangle>();
-    float kk = 0;
+    public ArrayList<Triangle> trias = new ArrayList<Triangle>();      // List of our TRIANGLEZZ
+    float kk = 0;                                               // Still crap and not using
 
+    // Casting our ArrayList to Array to prevent some exceptions
     public Triangle[] getTrias() {
         Triangle[] tmp = new Triangle[trias.size()];
         int i = 0;
@@ -22,11 +23,12 @@ public class GameWorld {
         return tmp;
     }
 
+    // Huh, empty constructor. Lame
     public GameWorld() {
 
     }
 
-
+    // Funcction to create triangle from smaller TRIANGLEZZZ
     public void doTringle(int n, int x, int y) {
         int sr = 300;
         int is = n;
@@ -55,6 +57,8 @@ public class GameWorld {
         }
     }
 
+
+    //Here's cycle of our logic and processing all object's
     public void update(float delta) {
         for (Triangle tr : getTrias()) {
             if (!tr.dead) tr.update(delta);

@@ -10,16 +10,16 @@ import com.badlogic.gdx.Screen;
  */
 public class GameScreen implements Screen {
 
-    GameWorld world;
-    GameRenderer renderer;
-    InputHandler handler;
-    float kk = 0;
+    GameWorld world;        // Logic class of our game
+    GameRenderer renderer;  // Render class of out game
+    InputHandler handler;   // Input Handler, duuh
+    float kk = 0;           // garbage variable for tracking FPS
 
     public GameScreen() {
         world = new GameWorld();
         renderer = new GameRenderer(world);
         handler = new InputHandler(world);
-        Gdx.input.setInputProcessor(handler);
+        Gdx.input.setInputProcessor(handler);  // Setting input of application to our Handler
     }
 
     @Override
@@ -61,6 +61,5 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-
     }
 }

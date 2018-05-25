@@ -15,27 +15,26 @@ import com.mygdx.game.shapes.Triangle;
  */
 public class GameRenderer {
 
-    private OrthographicCamera cam;
-    private GameWorld world;
-    private ShapeRenderer shapeRenderer;
-    private SpriteBatch batch;
-    public BitmapFont font;
-    public float fps = 0;
+    private OrthographicCamera cam;     // Camera for projection all objects
+    private GameWorld world;            // Pointer on our Game Logic class
+    private ShapeRenderer shapeRenderer;// Renderer for triangles
+    private SpriteBatch batch;          // Batch for rendering sprites
+    public BitmapFont font;             // Font for FPS and any text
+    public float fps = 0;               // FPS
 
-    public static final Color[] colors = {
-            new Color(255 / 255f, 0, 51 / 255f, 1),
-            new Color(51 / 255f, 204 / 255f, 102 / 255f, 1),
-            new Color(204 / 255f, 0, 102 / 255f, 1),
-            new Color(51 / 255f, 51 / 255f, 204 / 255f, 1),
-            new Color(0, 204 / 255f, 51 / 255f, 1),
-            new Color(204 / 255f, 255 / 255f, 0, 1),
-            new Color(1, 153 / 255f, 0, 1),
-            new Color(102 / 255f, 153 / 255f, 153 / 255f, 1)
+    public static final Color[] colors = {                      //Color's Array: contain's all colors in the game
+            new Color(255 / 255f, 0, 51 / 255f, 1),             //
+            new Color(51 / 255f, 204 / 255f, 102 / 255f, 1),    //
+            new Color(204 / 255f, 0, 102 / 255f, 1),            // idk what the color is each of this,
+            new Color(51 / 255f, 51 / 255f, 204 / 255f, 1),     // u can fill by yourself
+            new Color(0, 204 / 255f, 51 / 255f, 1),             //
+            new Color(204 / 255f, 255 / 255f, 0, 1),            //
+            new Color(1, 153 / 255f, 0, 1)                      //
     };
 
 
     public GameRenderer(GameWorld world) {
-        this.world = world;
+        this.world = world;                                     // fillin' the pointer
         cam = new OrthographicCamera();
         cam.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         shapeRenderer = new ShapeRenderer();
@@ -43,27 +42,25 @@ public class GameRenderer {
         batch.setProjectionMatrix(cam.combined);
         shapeRenderer.setProjectionMatrix(cam.combined);
         font = new BitmapFont(true);
-        font.setColor(Color.BLACK);
+        font.setColor(Color.DARK_GRAY);
     }
 
     public void render() {
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        cam.update();
-        Gdx.gl.glClearColor(204 / 255f, 1, 1, 1);
+        Gdx.gl.glEnable(GL20.GL_BLEND);                               //Boring OpenGL begin of cycle of rendering
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA); //Setting for possibility to render transparent shapes
+        cam.update();                                                 // updating the camera
+        Gdx.gl.glClearColor(204 / 255f, 1, 1, 1);                     //setting color of background in 2 strokes
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Triangle tr : world.getTrias()) {
-            //shapeRenderer.setColor(new Color(tr.color.r, tr.color.g, tr.color.b, 0.3f));
-            //shapeRenderer.circle(tr.center.x, tr.center.y, tr.st);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);          // Starting renderer of shapes
+        for (Triangle tr : world.getTrias()) {                        // Rendering all trinaglezz
             shapeRenderer.setColor(tr.color);
             shapeRenderer.triangle(tr.a.x, tr.a.y, tr.b.x, tr.b.y, tr.c.x, tr.c.y);
         }
-        shapeRenderer.end();
-        batch.begin();
+        shapeRenderer.end();                                           // Ending renderer of shapes
+        batch.begin();                                                 // Starting renderer of font
         font.draw(batch, (int) fps + "", 10, 10);
         batch.end();
-        Gdx.gl.glDisable(GL20.GL_BLEND);
+        Gdx.gl.glDisable(GL20.GL_BLEND);                                // Ending renderer of font
     }
 
 }
