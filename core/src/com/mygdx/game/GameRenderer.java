@@ -21,6 +21,7 @@ public class GameRenderer {
     private SpriteBatch batch;          // Batch for rendering sprites
     public BitmapFont font;             // Font for FPS and any text
     public float fps = 0;               // FPS
+    public static int WIDTH, HEIGHT;
 
     public static final Color[] colors = {                      //Color's Array: contain's all colors in the game
             new Color(255 / 255f, 0, 51 / 255f, 1),             //
@@ -43,6 +44,8 @@ public class GameRenderer {
         shapeRenderer.setProjectionMatrix(cam.combined);
         font = new BitmapFont(true);
         font.setColor(Color.DARK_GRAY);
+        WIDTH = Gdx.graphics.getWidth();
+        HEIGHT = Gdx.graphics.getHeight();
     }
 
     public void render() {
@@ -54,7 +57,7 @@ public class GameRenderer {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);          // Starting renderer of shapes
         for (Triangle tr : world.getTrias()) {                        // Rendering all trinaglezz
             shapeRenderer.setColor(tr.color);
-            shapeRenderer.triangle(tr.a.x, tr.a.y, tr.b.x, tr.b.y, tr.c.x, tr.c.y);
+            shapeRenderer.triangle(tr.vertex[0].x, tr.vertex[0].y, tr.vertex[1].x, tr.vertex[1].y, tr.vertex[2].x, tr.vertex[2].y);
         }
         shapeRenderer.end();                                           // Ending renderer of shapes
         batch.begin();                                                 // Starting renderer of font

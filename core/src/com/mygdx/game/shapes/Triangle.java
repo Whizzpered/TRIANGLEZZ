@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.mygdx.game.GameRenderer;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -12,12 +13,63 @@ import java.util.Random;
  */
 public class Triangle {
 
-    public Point a, b, c, center;       // Points of Triangle
+    public Point vertex[], center;       // Points of Triangle
     public int st;                      // Radius of circle with our triangle
-    public double angle;                // Angle of rotation
-    double gr;                          // variable for growing. Go on, fellow stalker
+    protected double angle, speed;
+    protected double acc; // Angle of rotation, Speed and acceleration
+    private double gr;                          // variable for growing. Go on, fellow stalker
     public boolean dead;                // for prevent some exceptions
     public Color color;                 // Color of triangle
+    private Point moveTarget;           // Target where TRIANGLE can go
+    private Triangle parent;
+    public ArrayList<Triangle> childs;
+
+    public Point getMoveTarget() {
+        return moveTarget;
+    }
+
+    public double getAngle() {
+        return angle;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public double getGr() {
+        return gr;
+    }
+
+    public Triangle getParent() {
+        return parent;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
+
+    public void setMoveTarget(int x, int y) {
+        moveTarget = new Point(x, y);
+    }
+
+    public void setMoveTarget(Point target) {
+        moveTarget = target;
+    }
+
+    public void setGr(double gr) {
+        this.gr = gr;
+    }
+
+    public void setParent(Triangle parent) {
+        this.parent = parent;
+        st = parent.st;
+        setAngle(parent.getAngle());
+        color = new Color(parent.color.r / 2, parent.color.g / 2, parent.color.b / 2, 0.3f);
+    }
 
     // Constructor for full random
     public Triangle() {
@@ -27,60 +79,67 @@ public class Triangle {
 
     // Constructor for known koords
     public Triangle(int x, int y) {
+        vertex = new Point[3];
+        for (int i = 0; i < 3; i++){
+            vertex[i] = new Point();
+        }
         Random r = new Random();
         center = new Point(x, y);
         color = GameRenderer.colors[r.nextInt(GameRenderer.colors.length)];
         st = r.nextInt(80) + 20;
-        angle = (double) (r.nextInt(360)) / 180f * Math.PI;
-        gr = 0;
         dead = false;
-        reset(true);
+        setAngle((double) (r.nextInt(360)) / 180f * Math.PI);
+        setGr(0);
+        setSpeed(3f);
+        postroit();
     }
 
-    public void setAngle(double angle) {
-        this.angle = angle;
-    }
-
-
-    // reseting all rotating and if @rotate == true rotate again
-    public void reset(boolean rotate) {
-        a = new Point(center.x, center.y - (int) gr);
-        b = new Point(center.x + (int) Math.round(gr * Math.sin(Math.PI / 3)), center.y + (int) Math.round(gr * Math.cos(Math.PI / 3)));
-        c = new Point(center.x - (int) Math.round(gr * Math.sin(Math.PI / 3)), center.y + (int) Math.round(gr * Math.cos(Math.PI / 3)));
-        if (rotate) rotate(angle);
-    }
-
-    // Boring mathematical formules
-    public void rotate(double angle) {
-        int x = (int) Math.round(((a.x - center.x) * Math.cos(angle)) - ((a.y - center.y) * Math.sin(angle)) + center.x);
-        int y = (int) Math.round(((a.x - center.x) * Math.sin(angle)) + ((a.y - center.y) * Math.cos(angle)) + center.y);
-        a.x = x;
-        a.y = y;
-        x = (int) Math.round(((b.x - center.x) * Math.cos(angle)) - ((b.y - center.y) * Math.sin(angle)) + center.x);
-        y = (int) Math.round(((b.x - center.x) * Math.sin(angle)) + ((b.y - center.y) * Math.cos(angle)) + center.y);
-        b.x = x;
-        b.y = y;
-        x = (int) Math.round(((c.x - center.x) * Math.cos(angle)) - ((c.y - center.y) * Math.sin(angle)) + center.x);
-        y = (int) Math.round(((c.x - center.x) * Math.sin(angle)) + ((c.y - center.y) * Math.cos(angle)) + center.y);
-        c.x = x;
-        c.y = y;
+    public void postroit() {
+        int i = 0, n = 3;
+        double z = getAngle(), c, s, ang = (Math.PI*2) / n;
+        double r = st * Math.sin(getGr());
+        while (i < n) {
+            c = Math.cos(z);
+            s = Math.sin(z);
+            vertex[i].x = center.x + (int) Math.round((c) * r);
+            vertex[i].y = center.y - (int) Math.round((s) * r);
+            z += ang;
+            i++;
+        }
     }
 
     //fucntrion of growing our triangle
     public void grow(float delta) {
-        if (gr < Math.PI) {
-            gr += delta * 4 / 3;
-            double r = st * Math.sin(gr);
-            a = new Point(center.x, center.y - (int) r);
-            b = new Point(center.x + (int) Math.round(r * Math.sin(Math.PI / 3)), center.y + (int) Math.round(r * Math.cos(Math.PI / 3)));
-            c = new Point(center.x - (int) Math.round(r * Math.sin(Math.PI / 3)), center.y + (int) Math.round(r * Math.cos(Math.PI / 3)));
-            rotate(angle);
+        if (getGr() < Math.PI) {
+            setGr(getGr() + delta * 4 / 3);
+            postroit();
         } else {
             dead = true;
         }
     }
 
+    public void move() {
+        if (moveTarget != null) {
+            if (!center.isClose(moveTarget)) {
+                setAngle(Math.atan2(moveTarget.y - center.y, moveTarget.x - center.x));
+                center.x += Math.cos(getAngle()) * getSpeed();
+                center.y += Math.sin(getAngle()) * getSpeed();
+            }
+        }
+        postroit();
+    }
+
+    public void imitate() {
+        if (getParent() != null) {
+            setMoveTarget(getParent().getMoveTarget());
+        }
+    }
+
     public void update(float delta) {
         grow(delta);
+        move();
+        if (getParent() != null) imitate();
     }
+
+
 }

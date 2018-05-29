@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.mygdx.game.shapes.Shell;
 import com.mygdx.game.shapes.Triangle;
 
 import java.util.ArrayList;
@@ -22,14 +23,46 @@ public class GameWorld {
         }
         return tmp;
     }
+    public void createTriangle(int x, int y) {
+        Triangle tr = new Triangle(x, y);
+        Triangle tr2 = new Triangle(x + 2, y + 2);
+        tr2.setParent(tr);
+        trias.add(tr2);
+        trias.add(tr);
+    }
+
+    public void createShell(int x, int y) {
+        Shell tr = new Shell(x, y);
+        Shell tr2 = new Shell(x + 2, y + 2);
+        tr2.setParent(tr);
+        tr.enable();
+        tr2.enable();
+        trias.add(tr2);
+        trias.add(tr);
+    }
+
 
     // Huh, empty constructor. Lame
     public GameWorld() {
 
     }
 
+    public void circlin(double z) {
+        int n = 4;
+        for(int i = 0; i < n;i ++) {
+            double c, s;
+            double r = GameRenderer.HEIGHT / 2;
+            c = Math.cos(z);
+            s = Math.sin(z);
+            int x = GameRenderer.WIDTH / 2 + (int) Math.round((c) * r);
+            int y = GameRenderer.HEIGHT / 2 - (int) Math.round((s) * r);
+            createShell(x, y);
+            z+=Math.PI*2/n;
+        }
+    }
+
     // Funcction to create triangle from smaller TRIANGLEZZZ
-    public void doTringle(int n, int x, int y) {
+    /*public void doTringle(int n, int x, int y) {
         int sr = 300;
         int is = n;
         int starty = y;
@@ -55,8 +88,8 @@ public class GameWorld {
                 trias.add(tr);
             }
         }
-    }
-
+    }*/
+    double z = 0;  //TEMP
 
     //Here's cycle of our logic and processing all object's
     public void update(float delta) {
@@ -64,6 +97,8 @@ public class GameWorld {
             if (!tr.dead) tr.update(delta);
             else trias.remove(tr);
         }
+        circlin(z);
+        z += (Math.PI * 2) / 190;
     }
 
 }

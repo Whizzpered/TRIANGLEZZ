@@ -6,14 +6,20 @@ package com.mygdx.game.shapes;
  */
 public class Point {
 
-    public int x, y;
+    public float x, y;
 
     public Point() {
         this(0, 0);
     }
 
-    public Point(int x, int y) {
+    public Point(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+
+    public boolean isClose(Point p2) {
+        if (Math.abs(p2.x - x) < 4 && Math.abs(p2.y - y) < 4)
+            return true;
+        return false;
     }
 }

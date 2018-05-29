@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
+import com.mygdx.game.shapes.Shell;
 import com.mygdx.game.shapes.Triangle;
 
 /**
@@ -18,11 +19,11 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Triangle tr = new Triangle(screenX, screenY);
-        Triangle tr2 = new Triangle(screenX + 2, screenY + 2);
-        tr2.st = tr.st;
-        tr2.angle = tr.angle;
-        tr2.color = new Color(tr.color.r / 2, tr.color.g / 2, tr.color.b / 2, 0.3f);
+        Shell tr = new Shell(screenX, screenY);
+        Shell tr2 = new Shell(screenX + 2, screenY + 2);
+        tr2.setParent(tr);
+        tr.enable();
+        tr2.enable();
         world.trias.add(tr2);
         world.trias.add(tr);
         return true;
@@ -50,14 +51,14 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        Triangle tr = new Triangle(screenX, screenY);
-        Triangle tr2 = new Triangle(screenX + 2, screenY + 2);
-        tr2.st = tr.st;
-        tr2.angle = tr.angle;
-        tr2.color = new Color(tr.color.r / 2, tr.color.g / 2, tr.color.b / 2, 0.3f);
+        Shell tr = new Shell(screenX, screenY);
+        Shell tr2 = new Shell(screenX + 2, screenY + 2);
+        tr2.setParent(tr);
+        tr.enable();
+        tr2.enable();
         world.trias.add(tr2);
         world.trias.add(tr);
-        return false;
+        return true;
     }
 
     @Override
