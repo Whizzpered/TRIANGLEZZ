@@ -1,8 +1,8 @@
 package com.mygdx.game.shapes;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.mygdx.game.GameRenderer;
+import com.mygdx.game.GameWorld;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -16,13 +16,48 @@ public class Triangle {
     public Point vertex[], center;       // Points of Triangle
     public int st;                      // Radius of circle with our triangle
     protected double angle, speed;
-    protected double acc; // Angle of rotation, Speed and acceleration
+    protected double acc, growAcc = 4.0 / 3.0; // Angle of rotation, Speed and accelerations
     private double gr;                          // variable for growing. Go on, fellow stalker
     public boolean dead;                // for prevent some exceptions
     public Color color;                 // Color of triangle
-    private Point moveTarget;           // Target where TRIANGLE can go
-    private Triangle parent;
-    public ArrayList<Triangle> childs;
+    protected Point moveTarget;         // Target where TRIANGLE can go
+    public ArrayList<Triangle> children;
+    protected GameWorld world;
+    protected int eps;
+
+    // Constructor for full random
+    public Triangle(GameWorld world) {
+        this(world, new Random().nextInt(GameRenderer.WIDTH - 80) + 80,
+                new Random().nextInt(GameRenderer.HEIGHT - 80) + 80);
+    }
+
+    public void setColor(int primaryAttribute) {
+        if (primaryAttribute < GameRenderer.colors.length) {
+            color = GameRenderer.colors[primaryAttribute];
+        } else {
+            color = GameRenderer.colors[GameRenderer.colors.length];
+        }
+    }
+
+    // Constructor for known koords
+    public Triangle(GameWorld world, int x, int y) {
+        vertex = new Point[3];
+        for (int i = 0; i < 3; i++) {
+            vertex[i] = new Point();
+        }
+        Random r = new Random();
+        center = new Point(x, y);
+        children = new ArrayList<Triangle>();
+        color = GameRenderer.colors[r.nextInt(GameRenderer.colors.length)];
+        st = r.nextInt(80) + 20;
+        dead = false;
+        eps = 4;
+        this.world = world;
+        setAngle((double) (r.nextInt(360)) / 180f * Math.PI);
+        setGr(0);
+        setSpeed(200f);
+        postroit();
+    }
 
     public Point getMoveTarget() {
         return moveTarget;
@@ -40,10 +75,6 @@ public class Triangle {
         return gr;
     }
 
-    public Triangle getParent() {
-        return parent;
-    }
-
     public void setSpeed(double speed) {
         this.speed = speed;
     }
@@ -53,11 +84,21 @@ public class Triangle {
     }
 
     public void setMoveTarget(int x, int y) {
-        moveTarget = new Point(x, y);
+        Point target = new Point(x, y);
+        setMoveTarget(target);
+    }
+
+
+    public void addChild(Triangle t) {
+        children.add(t);
     }
 
     public void setMoveTarget(Point target) {
         moveTarget = target;
+        for (Triangle t : children) {
+            t.setMoveTarget((int) (target.x + 2), (int) (target.y + 2));
+        }
+        setAngle(Math.atan2(moveTarget.y - center.y, moveTarget.x - center.x));
     }
 
     public void setGr(double gr) {
@@ -65,38 +106,15 @@ public class Triangle {
     }
 
     public void setParent(Triangle parent) {
-        this.parent = parent;
         st = parent.st;
         setAngle(parent.getAngle());
         color = new Color(parent.color.r / 2, parent.color.g / 2, parent.color.b / 2, 0.3f);
-    }
-
-    // Constructor for full random
-    public Triangle() {
-        this(new Random().nextInt(Gdx.graphics.getWidth() - 80) + 80,
-                new Random().nextInt(Gdx.graphics.getHeight() - 80) + 80);
-    }
-
-    // Constructor for known koords
-    public Triangle(int x, int y) {
-        vertex = new Point[3];
-        for (int i = 0; i < 3; i++){
-            vertex[i] = new Point();
-        }
-        Random r = new Random();
-        center = new Point(x, y);
-        color = GameRenderer.colors[r.nextInt(GameRenderer.colors.length)];
-        st = r.nextInt(80) + 20;
-        dead = false;
-        setAngle((double) (r.nextInt(360)) / 180f * Math.PI);
-        setGr(0);
-        setSpeed(3f);
-        postroit();
+        parent.addChild(this);
     }
 
     public void postroit() {
         int i = 0, n = 3;
-        double z = getAngle(), c, s, ang = (Math.PI*2) / n;
+        double z = getAngle(), c, s, ang = (Math.PI * 2) / n;
         double r = st * Math.sin(getGr());
         while (i < n) {
             c = Math.cos(z);
@@ -108,37 +126,34 @@ public class Triangle {
         }
     }
 
-    //fucntrion of growing our triangle
+    //function of growing our triangle
     public void grow(float delta) {
         if (getGr() < Math.PI) {
-            setGr(getGr() + delta * 4 / 3);
+            setGr(getGr() + delta * growAcc);
             postroit();
         } else {
             dead = true;
         }
     }
 
-    public void move() {
+    public void move(float delta) {
         if (moveTarget != null) {
-            if (!center.isClose(moveTarget)) {
+            if (!center.isClose(moveTarget, eps)) {
                 setAngle(Math.atan2(moveTarget.y - center.y, moveTarget.x - center.x));
-                center.x += Math.cos(getAngle()) * getSpeed();
-                center.y += Math.sin(getAngle()) * getSpeed();
+                center.x += Math.cos(getAngle()) * getSpeed() * delta;
+                center.y += Math.sin(getAngle()) * getSpeed() * delta;
+                postroit();
+            } else {
+                moveTarget = null;
             }
-        }
-        postroit();
-    }
-
-    public void imitate() {
-        if (getParent() != null) {
-            setMoveTarget(getParent().getMoveTarget());
         }
     }
 
     public void update(float delta) {
-        grow(delta);
-        move();
-        if (getParent() != null) imitate();
+        move(delta);
+        if (moveTarget == null) {
+            grow(delta);
+        }
     }
 
 

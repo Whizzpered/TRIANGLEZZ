@@ -1,6 +1,6 @@
 package com.mygdx.game.shapes;
 
-import com.mygdx.game.GameRenderer;
+import com.mygdx.game.GameWorld;
 
 /**
  * Created by Whizzpered on 28.05.2018.
@@ -8,21 +8,49 @@ import com.mygdx.game.GameRenderer;
  */
 public class Shell extends Triangle {
 
-    public Shell(int x, int y) {
-        super(x, y);
-        //setAngle(Math.atan2(y - GameRenderer.HEIGHT / 2, x - GameRenderer.WIDTH / 2));
-        setMoveTarget(GameRenderer.WIDTH / 2, GameRenderer.HEIGHT / 2);
-        setGr(Math.PI/2);
+    private int damage;
+
+    public void setDamage(int dmg) {
+        damage = dmg;
+    }
+
+    public Shell(GameWorld world, int x, int y) {
+        super(world, x, y);
+        setGr(Math.PI / 2);
         dead = false;
+        damage = 1;
+        growAcc = 10.0;
+        setColor(damage);
     }
 
     public void enable() {
-        setGr(Math.PI/2);
+        setGr(Math.PI / 2);
+        eps = 27;
         postroit();
     }
 
     @Override
-    public void update(float delta) {
-        move();
+    public void move(float delta){
+        if (moveTarget != null) {
+            if (!center.isClose(moveTarget,4)) {
+                setAngle(Math.atan2(moveTarget.y - center.y, moveTarget.x - center.x));
+                center.x += Math.cos(getAngle()) * getSpeed() * delta;
+                center.y += Math.sin(getAngle()) * getSpeed() * delta;
+                postroit();
+            } else {
+                moveTarget = null;
+            }
+        }
+        attack();
+    }
+
+    public void attack() {
+        for (Part p : world.enemy.getParts()) {
+            if (center.isClose(p.center, eps)) {
+                p.hit(damage);
+                moveTarget = null;
+                setGr(Math.PI);
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.mygdx.game.shapes.Part;
 import com.mygdx.game.shapes.Triangle;
 
 /**
@@ -37,15 +38,15 @@ public class GameRenderer {
     public GameRenderer(GameWorld world) {
         this.world = world;                                     // fillin' the pointer
         cam = new OrthographicCamera();
-        cam.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        WIDTH = Gdx.graphics.getWidth();
+        HEIGHT = Gdx.graphics.getHeight();
+        cam.setToOrtho(true, WIDTH, HEIGHT);
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
         batch.setProjectionMatrix(cam.combined);
         shapeRenderer.setProjectionMatrix(cam.combined);
         font = new BitmapFont(true);
         font.setColor(Color.DARK_GRAY);
-        WIDTH = Gdx.graphics.getWidth();
-        HEIGHT = Gdx.graphics.getHeight();
     }
 
     public void render() {
@@ -61,6 +62,7 @@ public class GameRenderer {
         }
         shapeRenderer.end();                                           // Ending renderer of shapes
         batch.begin();                                                 // Starting renderer of font
+        font.setColor(Color.BLACK);
         font.draw(batch, (int) fps + "", 10, 10);
         batch.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);                                // Ending renderer of font

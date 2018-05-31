@@ -6,7 +6,8 @@ package com.mygdx.game.gui;
  */
 public class Button {
     com.badlogic.gdx.scenes.scene2d.ui.Button kek;
-    public void some(){
+
+    public void some() {
 
     }
 }

@@ -1,9 +1,8 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
+import com.mygdx.game.shapes.Boss;
 import com.mygdx.game.shapes.Shell;
-import com.mygdx.game.shapes.Triangle;
 
 /**
  * Created by Whizzpered on 02.05.2018.
@@ -19,13 +18,10 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Shell tr = new Shell(screenX, screenY);
-        Shell tr2 = new Shell(screenX + 2, screenY + 2);
-        tr2.setParent(tr);
-        tr.enable();
-        tr2.enable();
-        world.trias.add(tr2);
-        world.trias.add(tr);
+        //world.createTriangle(screenX,screenY);
+        //world.createTest(screenX + 120, screenY);
+        //world.createSpawner();
+        world.createShell(screenX,screenY);
         return true;
     }
 
@@ -51,13 +47,7 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        Shell tr = new Shell(screenX, screenY);
-        Shell tr2 = new Shell(screenX + 2, screenY + 2);
-        tr2.setParent(tr);
-        tr.enable();
-        tr2.enable();
-        world.trias.add(tr2);
-        world.trias.add(tr);
+        //world.createShell(screenX,screenY);
         return true;
     }
 

@@ -17,9 +17,16 @@ public class Point {
         this.y = y;
     }
 
-    public boolean isClose(Point p2) {
-        if (Math.abs(p2.x - x) < 4 && Math.abs(p2.y - y) < 4)
+    public boolean isClose(Point p2, float dist) {
+        if (Math.abs(p2.x - x) < dist && Math.abs(p2.y - y) < dist)
             return true;
         return false;
+    }
+
+    public double calculateDistance(Point p2) {
+        double distx = p2.x - x,
+                disty = p2.y - y,
+                dist = Math.sqrt(Math.pow(distx, 2) + Math.pow(disty, 2));
+        return dist;
     }
 }
