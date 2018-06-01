@@ -63,7 +63,9 @@ public class GameRenderer {
         shapeRenderer.end();                                           // Ending renderer of shapes
         batch.begin();                                                 // Starting renderer of font
         font.setColor(Color.BLACK);
-        font.draw(batch, (int) fps + "", 10, 10);
+        font.draw(batch, (int) fps + "fps", 10, 10);
+        font.setColor(Color.GREEN);
+        font.draw(batch, world.money + "", WIDTH/2 - 28, 10);
         batch.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);                                // Ending renderer of font
     }

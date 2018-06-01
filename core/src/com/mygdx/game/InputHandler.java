@@ -1,8 +1,8 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.mygdx.game.shapes.Boss;
-import com.mygdx.game.shapes.Shell;
+import com.mygdx.game.shapes.Spawner;
 
 /**
  * Created by Whizzpered on 02.05.2018.
@@ -11,6 +11,7 @@ import com.mygdx.game.shapes.Shell;
 public class InputHandler implements InputProcessor {
 
     GameWorld world;
+    int price = 10;
 
     public InputHandler(GameWorld world) {
         this.world = world;
@@ -18,15 +19,30 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        //world.createTriangle(screenX,screenY);
-        //world.createTest(screenX + 120, screenY);
-        //world.createSpawner();
-        world.createShell(screenX,screenY);
+
+        if (!world.enemy.generating) {
+            //world.createShell(screenX,screenY);
+            //world.createTriangle(screenX,screenY);
+            //world.createTest(screenX + 120, screenY);
+            world.createSpawner();
+        }
         return true;
     }
 
     @Override
     public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.R) {
+            world.rot = !world.rot;
+        }
+        if (keycode == Input.Keys.U) {
+            if (world.money >= price) {
+                for (Spawner sp : world.spawners) {
+                    sp.damage += 1;
+                }
+                world.money -= price;
+                price *= 2;
+            }
+        }
         return false;
     }
 

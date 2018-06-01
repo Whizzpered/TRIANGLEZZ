@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.mygdx.game.shapes.*;
 
 import java.util.ArrayList;
@@ -11,8 +13,12 @@ import java.util.ArrayList;
 public class GameWorld {
 
     public ArrayList<Triangle> trias = new ArrayList<Triangle>();      // List of our TRIANGLEZZ
+    public ArrayList<Spawner> spawners = new ArrayList<Spawner>();
     float kk = 0;                                               // Still crap and not using
     public Boss enemy;
+    public int money;
+    Preferences prefs = Gdx.app.getPreferences("Game Preferences");
+    public boolean rot = true;
 
     // Casting our ArrayList to Array to prevent some exceptions
     public Triangle[] getTrias() {
@@ -29,10 +35,11 @@ public class GameWorld {
         trias.add(tr);
     }
 
-    public void createShell(int x, int y) {
+    public void createShell(int x, int y, int damage) {
         Shell tr = new Shell(this, x, y);
-        tr.st = 30;
+        tr.st = 15;
         tr.setMoveTarget(GameRenderer.WIDTH / 2, GameRenderer.HEIGHT / 2);
+        tr.setDamage(damage);
         tr.enable();
         trias.add(tr);
     }
@@ -49,6 +56,7 @@ public class GameWorld {
         tr.st = 30;
         tr.setMoveTarget(GameRenderer.WIDTH / 2, GameRenderer.HEIGHT / 2);
         tr.enable();
+        spawners.add(tr);
         trias.add(tr);
     }
 
@@ -63,23 +71,17 @@ public class GameWorld {
 
     }
 
+    public void save(){
+
+    }
+
+    public void load(){
+        //if(prefs)
+    }
+
     public void initialize() {
         enemy = new Boss(this, GameRenderer.WIDTH / 2, GameRenderer.HEIGHT / 2);
         enemy.generate();
-    }
-
-    public void circlin(double z) {
-        int n = 8;
-        for (int i = 0; i < n; i++) {
-            double c, s;
-            double r = GameRenderer.HEIGHT / 2;
-            c = Math.cos(z);
-            s = Math.sin(z);
-            int x = GameRenderer.WIDTH / 2 + (int) Math.round((c) * r);
-            int y = GameRenderer.HEIGHT / 2 - (int) Math.round((s) * r);
-            createShell(x, y);
-            z += Math.PI * 2 / n;
-        }
     }
 
     double z = 0;  //TEMP

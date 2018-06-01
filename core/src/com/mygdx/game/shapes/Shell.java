@@ -16,16 +16,15 @@ public class Shell extends Triangle {
 
     public Shell(GameWorld world, int x, int y) {
         super(world, x, y);
-        setGr(Math.PI / 2);
         dead = false;
-        damage = 1;
         growAcc = 10.0;
-        setColor(damage);
+        setGr(Math.PI / 2);
     }
 
     public void enable() {
+        eps = (int)(st*1.5);
         setGr(Math.PI / 2);
-        eps = 27;
+        setColor(damage);
         postroit();
     }
 
@@ -40,8 +39,8 @@ public class Shell extends Triangle {
             } else {
                 moveTarget = null;
             }
+            attack();
         }
-        attack();
     }
 
     public void attack() {
@@ -50,7 +49,21 @@ public class Shell extends Triangle {
                 p.hit(damage);
                 moveTarget = null;
                 setGr(Math.PI);
+                return;
             }
+        }
+    }
+
+    @Override
+    public void update(float delta) {
+        if(!world.enemy.generating) {
+            move(delta);
+            if (moveTarget == null) {
+                grow(delta);
+        }
+        }
+        if(moveTarget == null && world.enemy.generating){
+            grow(delta);
         }
     }
 }

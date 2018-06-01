@@ -20,7 +20,7 @@ public class Boss extends Triangle {
     public Boss(GameWorld world, int x, int y) {
         super(world, x, y);
         parts = new ArrayList<Part>();
-        lvl = 6;
+        lvl = 509;
     }
 
     public Part[] getParts() {
@@ -41,6 +41,11 @@ public class Boss extends Triangle {
     }
 
     public void generate() {
+        for (Triangle s : world.getTrias()) {
+            if (s instanceof Shell) {
+                s.setMoveTarget(null);
+            }
+        }
         generating = true;
         init = true;
         energy = 0.0;
@@ -53,7 +58,7 @@ public class Boss extends Triangle {
         int n = 16;
         for (int i = 0; i < n; i++) {
             double c, s;
-            double r = GameRenderer.WIDTH/3;
+            double r = GameRenderer.WIDTH / 3;
             c = Math.cos(z);
             s = Math.sin(z);
             int x = (int) center.x + (int) Math.round((c) * r);

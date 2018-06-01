@@ -1,7 +1,5 @@
 package com.mygdx.game.shapes;
 
-import com.mygdx.game.GameRenderer;
-
 import java.util.Random;
 
 /**
@@ -12,7 +10,7 @@ public class Part extends Triangle {
 
     private Boss parent;
     private boolean initiate;
-    private int hp;
+    private int hp, maxhp;
 
     public int getHP() {
         return hp;
@@ -20,21 +18,27 @@ public class Part extends Triangle {
 
     public void hit(int dmg) {
         hp -= dmg;
-        setColor(hp);
+        if (hp >= 0) setColor(hp);
         if (hp <= 0) {
             growAcc = 10.0;
+            world.money += maxhp;
             parent.removePart(this);
         }
     }
 
     public Part(Boss boss, int x, int y) {
-        super(boss.world, x, y);
+        //super(boss.world, (int) boss.center.x, (int) boss.center.y);
+        super(boss.world, (int) x, (int) y);
         parent = boss;
-        setMoveTarget((int) parent.center.x, (int) parent.center.y);
+        //setMoveTarget(x, y);
+        setMoveTarget((int) boss.center.x, (int) boss.center.y);
         initiate = boss.init;
         setSpeed(100f);
-        hp = Math.min(boss.lvl, 6) - 1;
-        hp = new Random().nextInt(hp) + 1;
+        hp = Math.min(boss.lvl, 6);
+        if (hp != 1) {
+            hp = new Random().nextInt(hp - 1) + 1;
+        }
+        maxhp = hp;
         setColor(hp);
         eps = 15;
         boss.init = false;
@@ -64,7 +68,7 @@ public class Part extends Triangle {
         if (hp > 0) {
             move(delta);
         }
-        if (moveTarget == null || hp <= 0) {
+        if (hp <= 0) {
             move(delta);
             grow(delta);
         }
