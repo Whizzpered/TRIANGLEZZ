@@ -2,7 +2,7 @@ package com.mygdx.game.gui;
 
 /**
  * Created by Whizzpered on 01.06.2018.
- * Only for commercial and learnin use <3;
+ * Only for uncommercial and learnin use <3;
  */
 public abstract class ShopButton extends Button {
 

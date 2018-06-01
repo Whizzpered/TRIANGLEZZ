@@ -7,7 +7,7 @@ import com.mygdx.game.gui.GameShop;
 
 /**
  * Created by Whizzpered on 01.05.2018.
- * Only for commercial and learnin use <3;
+ * Only for uncommercial and learnin use <3;
  */
 public class GameScreen implements Screen {
 

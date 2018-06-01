@@ -7,7 +7,7 @@ import com.mygdx.game.shapes.Spawner;
 
 /**
  * Created by Whizzpered on 02.05.2018.
- * Only for commercial and learnin use <3;
+ * Only for uncommercial and learning use :)
  */
 public class InputHandler implements InputProcessor {
 

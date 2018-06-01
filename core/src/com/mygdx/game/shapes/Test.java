@@ -4,7 +4,7 @@ import com.mygdx.game.GameWorld;
 
 /**
  * Created by Whizzpered on 30.05.2018.
- * Only for commercial and learnin use <3;
+ * Only for uncommercial and learnin use <3;
  */
 public class Test extends Triangle {
     public Test(GameWorld world, int x, int y) {
