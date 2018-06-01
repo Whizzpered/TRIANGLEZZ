@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.mygdx.game.gui.Button;
 import com.mygdx.game.shapes.Spawner;
 
 /**
@@ -19,30 +20,27 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-        if (!world.enemy.generating) {
-            //world.createShell(screenX,screenY);
-            //world.createTriangle(screenX,screenY);
-            //world.createTest(screenX + 120, screenY);
-            world.createSpawner();
+        if (GameScreen.shop.isShowing()) {
+            for (Button b : GameScreen.shop.buttons) {
+                if (b.pressed(screenX, screenY)) {
+                    return true;
+                }
+            }
+        } else {
+            for (Button b : world.buttons) {
+                if (b.pressed(screenX, screenY)) {
+                    return true;
+                }
+            }
+            if (!world.enemy.generating) {
+                world.createShell(screenX, screenY, world.damage);
+            }
         }
         return true;
     }
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.R) {
-            world.rot = !world.rot;
-        }
-        if (keycode == Input.Keys.U) {
-            if (world.money >= price) {
-                for (Spawner sp : world.spawners) {
-                    sp.damage += 1;
-                }
-                world.money -= price;
-                price *= 2;
-            }
-        }
         return false;
     }
 

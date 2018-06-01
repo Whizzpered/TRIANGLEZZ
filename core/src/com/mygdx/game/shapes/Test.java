@@ -13,7 +13,7 @@ public class Test extends Triangle {
 
 
     @Override
-    public void postroit() {
+    public void build() {
         int i = 0, n = 3;
         double z = Math.PI * 7 /6, c, s, ang = (Math.PI * 2) / n;
         double r = st * Math.sin(getGr());

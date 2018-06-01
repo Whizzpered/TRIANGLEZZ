@@ -3,6 +3,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.mygdx.game.gui.GameShop;
 
 /**
  * Created by Whizzpered on 01.05.2018.
@@ -10,19 +11,22 @@ import com.badlogic.gdx.Screen;
  */
 public class GameScreen implements Screen {
 
-    GameWorld world;        // Logic class of our game
-    GameRenderer renderer;  // Render class of out game
-    InputHandler handler;   // Input Handler, duuh
+    public static GameWorld world;        // Logic class of our game
+    public static GameRenderer renderer;  // Render class of out game
+    public static InputHandler handler;   // Input Handler, duuh
+    public static GameShop shop;
     float kk = 0;           // garbage variable for tracking FPS
     boolean starting;
 
     public GameScreen() {
         starting = true;
-        world = new GameWorld();
+        world = new GameWorld(this);
         renderer = new GameRenderer(world);
         handler = new InputHandler(world);
+        shop = new GameShop(world);
         Gdx.input.setInputProcessor(handler);  // Setting input of application to our Handler
-        world.initialize();
+        world.initialize(shop);
+        shop.initialize();
         starting = false;
     }
 
@@ -41,6 +45,8 @@ public class GameScreen implements Screen {
             } else {
                 kk += delta;
             }
+            if (shop.isShowing())
+                shop.render(renderer.getShapeRenderer(), renderer.getFont(), renderer.getBatch());
             renderer.render();
         }
     }
@@ -67,5 +73,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        renderer.dispose();
     }
 }

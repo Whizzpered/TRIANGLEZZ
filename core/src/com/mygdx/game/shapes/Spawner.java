@@ -29,25 +29,29 @@ public class Spawner extends Triangle {
     public void enable() {
         setGr(Math.PI / 2);
         eps = 27;
-        postroit();
+        damage = world.shop.damage;
+        build();
+    }
+
+    public void rotate(float delta){
+        double r = GameRenderer.WIDTH / 2;
+        center.x = GameRenderer.WIDTH / 2 + (int) Math.round((Math.cos(ang)) * r);
+        center.y = GameRenderer.HEIGHT / 2 - (int) Math.round((Math.sin(ang)) * r);
+        ang += delta / 3;
     }
 
     @Override
     public void move(float delta) {
-        if(world.rot) {
-            double r = GameRenderer.WIDTH / 2;
-            center.x = GameRenderer.WIDTH / 2 + (int) Math.round((Math.cos(ang)) * r);
-            center.y = GameRenderer.HEIGHT / 2 - (int) Math.round((Math.sin(ang)) * r);
-            ang += delta / 3;
+        if (world.rot) {
+            rotate(delta);
         }
-            postroit();
-            if (energy >= cd) {
-                world.createShell((int) center.x, (int) center.y, damage);
-                System.out.println(damage);
-                energy -= cd;
-            }
+        build();
+        if (energy >= cd) {
+            world.createShell((int) center.x, (int) center.y, damage);
+            energy -= cd;
+        }
 
-            energy += delta;
+        energy += delta;
 
     }
 

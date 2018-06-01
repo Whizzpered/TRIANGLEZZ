@@ -22,20 +22,20 @@ public class Shell extends Triangle {
     }
 
     public void enable() {
-        eps = (int)(st*1.5);
+        eps = (int) (st * 1.5);
         setGr(Math.PI / 2);
         setColor(damage);
-        postroit();
+        build();
     }
 
     @Override
-    public void move(float delta){
+    public void move(float delta) {
         if (moveTarget != null) {
-            if (!center.isClose(moveTarget,4)) {
+            if (!center.isClose(moveTarget, 4)) {
                 setAngle(Math.atan2(moveTarget.y - center.y, moveTarget.x - center.x));
                 center.x += Math.cos(getAngle()) * getSpeed() * delta;
                 center.y += Math.sin(getAngle()) * getSpeed() * delta;
-                postroit();
+                build();
             } else {
                 moveTarget = null;
             }
@@ -56,13 +56,13 @@ public class Shell extends Triangle {
 
     @Override
     public void update(float delta) {
-        if(!world.enemy.generating) {
+        if (!world.enemy.generating) {
             move(delta);
             if (moveTarget == null) {
                 grow(delta);
+            }
         }
-        }
-        if(moveTarget == null && world.enemy.generating){
+        if (moveTarget == null && world.enemy.generating) {
             grow(delta);
         }
     }

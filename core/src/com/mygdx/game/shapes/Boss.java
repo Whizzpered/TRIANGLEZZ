@@ -20,7 +20,7 @@ public class Boss extends Triangle {
     public Boss(GameWorld world, int x, int y) {
         super(world, x, y);
         parts = new ArrayList<Part>();
-        lvl = 509;
+        lvl = 1;
     }
 
     public Part[] getParts() {
@@ -41,6 +41,7 @@ public class Boss extends Triangle {
     }
 
     public void generate() {
+        z = 0;
         for (Triangle s : world.getTrias()) {
             if (s instanceof Shell) {
                 s.setMoveTarget(null);
@@ -49,13 +50,16 @@ public class Boss extends Triangle {
         generating = true;
         init = true;
         energy = 0.0;
-        cd = 2 / (double) (lvl);
+        cd = 2 / (double) (Math.min(lvl, 40));
+        if (lvl < 5) {
+            generateEarly();
+            generating = false;
+        }
         //coef = 1.0;
-
     }
 
     public void circlin(double z) {
-        int n = 16;
+        int n = Math.min(Math.max(lvl / 3, 1), 16);
         for (int i = 0; i < n; i++) {
             double c, s;
             double r = GameRenderer.WIDTH / 3;
@@ -65,6 +69,29 @@ public class Boss extends Triangle {
             int y = (int) center.y - (int) Math.round((s) * r);
             world.createPart(this, x, y);
             z += Math.PI * 2 / n;
+        }
+    }
+
+    public void generateEarly() {
+        if (lvl == 1)
+            world.createPart(this, (int) center.x, (int) center.y);
+        else {
+            int n = lvl;
+            for (int j = 0; j < (int) (Math.round(n / 2)); j++) {
+                double r = GameRenderer.WIDTH / (3 * Math.max(j + 1, 1));
+                for (int i = 0; i < n; i++) {
+                    double c, s;
+                    c = Math.cos(z);
+                    s = Math.sin(z);
+                    int x = (int) center.x + (int) Math.round((c) * r);
+                    int y = (int) center.y - (int) Math.round((s) * r);
+                    world.createPart(this, x, y);
+                    z += Math.PI * 2 / n;
+                }
+            }
+        }
+        for (Part p : parts) {
+            p.setMoveTarget(null);
         }
     }
 

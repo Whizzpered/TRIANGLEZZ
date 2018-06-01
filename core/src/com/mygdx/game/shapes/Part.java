@@ -34,7 +34,11 @@ public class Part extends Triangle {
         setMoveTarget((int) boss.center.x, (int) boss.center.y);
         initiate = boss.init;
         setSpeed(100f);
-        hp = Math.min(boss.lvl, 6);
+        if (boss.lvl <= 52) {
+            hp = Math.min(boss.lvl, 50);
+        } else {
+            hp = (int) (boss.lvl * 1.3);
+        }
         if (hp != 1) {
             hp = new Random().nextInt(hp - 1) + 1;
         }
@@ -57,7 +61,7 @@ public class Part extends Triangle {
                 center.x = parent.center.x + (int) Math.round((Math.cos(getAngle())) * r);
                 center.y = parent.center.y - (int) Math.round((Math.sin(getAngle())) * r);
                 setAngle(getAngle() + delta);
-                postroit();
+                build();
             }
             if (getGr() < Math.PI / 2) grow(delta);
         }

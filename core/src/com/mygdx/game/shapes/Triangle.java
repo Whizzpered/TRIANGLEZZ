@@ -56,7 +56,7 @@ public class Triangle {
         setAngle((double) (r.nextInt(360)) / 180f * Math.PI);
         setGr(0);
         setSpeed(200f);
-        postroit();
+        build();
     }
 
     public Point getMoveTarget() {
@@ -113,7 +113,7 @@ public class Triangle {
         parent.addChild(this);
     }
 
-    public void postroit() {
+    public void build() {
         int i = 0, n = 3;
         double z = getAngle(), c, s, ang = (Math.PI * 2) / n;
         double r = st * Math.sin(getGr());
@@ -131,7 +131,7 @@ public class Triangle {
     public void grow(float delta) {
         if (getGr() < Math.PI) {
             setGr(getGr() + delta * growAcc);
-            postroit();
+            build();
         } else {
             dead = true;
         }
@@ -143,7 +143,7 @@ public class Triangle {
                 setAngle(Math.atan2(moveTarget.y - center.y, moveTarget.x - center.x));
                 center.x += Math.cos(getAngle()) * getSpeed() * delta;
                 center.y += Math.sin(getAngle()) * getSpeed() * delta;
-                postroit();
+                build();
             } else {
                 moveTarget = null;
             }
