@@ -15,12 +15,12 @@ public class Boss extends Triangle {
     public boolean generating, init;
     double z = 0;  //TEMP
     private double cd, energy, coef;
-    public int lvl;
+    public int lvl, wave;
 
     public Boss(GameWorld world, int x, int y) {
         super(world, x, y);
         parts = new ArrayList<Part>();
-        lvl = 1;
+        lvl = 100;
     }
 
     public Part[] getParts() {
@@ -41,6 +41,7 @@ public class Boss extends Triangle {
     }
 
     public void generate() {
+        wave = 0;
         z = 0;
         for (Triangle s : world.getTrias()) {
             if (s instanceof Shell) {
@@ -60,6 +61,7 @@ public class Boss extends Triangle {
 
     public void circlin(double z) {
         int n = Math.min(Math.max(lvl / 3, 1), 16);
+        if(!init)wave++;
         for (int i = 0; i < n; i++) {
             double c, s;
             double r = GameRenderer.WIDTH / 3;

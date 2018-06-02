@@ -42,6 +42,7 @@ public class Part extends Triangle {
         if (hp != 1) {
             hp = new Random().nextInt(hp - 1) + 1;
         }
+        if (!initiate && boss.wave != 0) hp = boss.wave;
         maxhp = hp;
         setColor(hp);
         eps = 15;

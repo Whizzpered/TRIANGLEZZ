@@ -43,30 +43,30 @@ public class GameShop {
                 setVisibility(false);
             }
         });
-        ShopButton tmp1 = new ShopButton(200, 150, "Upgrade attack") {
+        ShopButton tmp1 = new ShopButton(GameRenderer.WIDTH/5, 150, "Upgrade attack") {
             @Override
             public void action() {
                 if (world.money >= price) {
                     world.damage += coef;
                     world.money -= price;
-                    price *= 1.35;
+                    price *= 1.5;
                 }
             }
         };
         tmp1.price = 10;
         tmp1.coef = 1;
-        tmp1.setDesc(new String[]{"Everybody wants more powerfull TRIANGLEZZ, right?",
+        tmp1.setDesc(new String[]{"more powerfull tap TRIANGLEZZ",
                 " more point to damage!",
                 "dead triangles for it"});
         buttons.add(tmp1);
 
-        ShopButton tmp2 = new ShopButton(200, 250, "Buy automatic") {
+        ShopButton tmp2 = new ShopButton(GameRenderer.WIDTH/5, 250, "Buy automatic") {
             @Override
             public void action() {
                 if (world.money >= price) {
                     world.createSpawner();
                     world.money -= price;
-                    price *= 1.35;
+                    price *= 1.5;
                 }
             }
         };
@@ -75,21 +75,21 @@ public class GameShop {
                 "You will get one more automatic TRIANGLE",
                 "dead triangles for it"});
         buttons.add(tmp2);
-        ShopButton tmp3 = new ShopButton(200, 350, "Upgrade automatic") {
+        ShopButton tmp3 = new ShopButton(GameRenderer.WIDTH/5, 350, "Upgrade automatic") {
             @Override
             public void action() {
                 if (world.money >= price) {
                     damage += coef;
                     update();
                     world.money -= price;
-                    price *= 1.35;
+                    price *= 1.5;
                 }
             }
         };
         tmp3.price = 15;
         tmp3.coef = 1;
-        tmp3.setDesc(new String[]{"Everybody wants more powerfull  automatic TRIANGLE, right?",
-                " more point to damage!",
+        tmp3.setDesc(new String[]{"More powerfull automatic TRIANGLE",
+                " more point to damage for automatic!",
                 " dead triangles for it"});
         buttons.add(tmp3);
     }
