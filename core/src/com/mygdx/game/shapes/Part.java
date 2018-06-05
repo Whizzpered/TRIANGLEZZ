@@ -1,5 +1,7 @@
 package com.mygdx.game.shapes;
 
+import com.mygdx.game.GameRenderer;
+
 import java.util.Random;
 
 /**
@@ -10,7 +12,9 @@ public class Part extends Triangle {
 
     private Boss parent;
     private boolean initiate;
-    private int hp, maxhp;
+    private int hp, maxhp, grdelta = 10;
+    private double cooldown, gracc;
+    boolean growing, wt;
 
     public int getHP() {
         return hp;
@@ -22,6 +26,7 @@ public class Part extends Triangle {
         if (hp <= 0) {
             growAcc = 10.0;
             world.money += maxhp;
+            world.killed++;
             parent.removePart(this);
         }
     }
@@ -61,23 +66,48 @@ public class Part extends Triangle {
                 double r = center.calculateDistance(parent.center);
                 center.x = parent.center.x + (int) Math.round((Math.cos(getAngle())) * r);
                 center.y = parent.center.y - (int) Math.round((Math.sin(getAngle())) * r);
-                setAngle(getAngle() + delta);
+                setAngle(getAngle() + delta / 2);
                 build();
             }
             if (getGr() < Math.PI / 2) grow(delta);
         }
     }
 
+    public void up(float delta) {
+        if (!growing && cooldown >= 2f) {
+            cooldown = 0f;
+            growing = true;
+            wt = true;
+            growAcc = 0;
+        }
+        if (growing) {
+            if (wt) {
+                growAcc -= delta * 4.0 / 3.0;
+                st += (Math.sin(growAcc));
+                if (growAcc <= (Math.PI / 14) * (-1)) wt = false;
+            } else {
+                growAcc += delta * 4.0 / 3.0;
+                st += (Math.sin(growAcc));
+                if (growAcc >= (Math.PI / 5)) growing = false;
+            }
+        } else {
+            cooldown += delta;
+        }
+        if (center.x + st >= GameRenderer.WIDTH) {
+            parent.world.lose();
+        }
+    }
+
+
     @Override
     public void update(float delta) {
         if (hp > 0) {
             move(delta);
+            up(delta);
         }
         if (hp <= 0) {
             move(delta);
             grow(delta);
         }
     }
-
-
 }

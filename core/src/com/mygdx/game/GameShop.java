@@ -1,4 +1,4 @@
-package com.mygdx.game.gui;
+package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -7,12 +7,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.game.GameRenderer;
 import com.mygdx.game.GameWorld;
+import com.mygdx.game.gui.Button;
+import com.mygdx.game.gui.ShopButton;
 import com.mygdx.game.shapes.Spawner;
 
 import java.util.ArrayList;
 
 /**
- * Created by Whizzpered on 01.06.2018.
+ * Created by Whizzpered on 30.05.2018.
  * Only for uncommercial and learnin use <3;
  */
 public class GameShop {
@@ -21,8 +23,18 @@ public class GameShop {
     public ArrayList<Spawner> spawners = new ArrayList<Spawner>();
     private boolean show;
     private GameWorld world;
-    public int damage = 1;
+    public double cd;
     GlyphLayout layout = new GlyphLayout();
+    private int x, y, width, height;
+
+    public ShopButton get(String name){
+        for (Button b : buttons) {
+            if(b instanceof ShopButton && b.getName().equals(name)){
+                return (ShopButton)b;
+            }
+        }
+        return null;
+    }
 
     public GameShop(GameWorld world) {
         this.world = world;
@@ -37,13 +49,21 @@ public class GameShop {
     }
 
     public void initialize() {
+        x = 50;
+        y = 50;
+        width = GameRenderer.WIDTH - 100;
+        height = GameRenderer.HEIGHT - 100;
+        cd = 1;
+        buttons.clear();
+        spawners.clear();
         buttons.add(new Button(GameRenderer.WIDTH / 2, GameRenderer.HEIGHT - 50, "Confirm") {
             @Override
             public void action() {
                 setVisibility(false);
             }
         });
-        ShopButton tmp1 = new ShopButton(GameRenderer.WIDTH/5, 150, "Upgrade attack") {
+
+        ShopButton tmp1 = new ShopButton(x + 85, 150, "Upgrade attack") {
             @Override
             public void action() {
                 if (world.money >= price) {
@@ -60,7 +80,7 @@ public class GameShop {
                 "dead triangles for it"});
         buttons.add(tmp1);
 
-        ShopButton tmp2 = new ShopButton(GameRenderer.WIDTH/5, 250, "Buy automatic") {
+        ShopButton tmp2 = new ShopButton(x + 85, 250, "Buy automatic") {
             @Override
             public void action() {
                 if (world.money >= price) {
@@ -71,15 +91,16 @@ public class GameShop {
             }
         };
         tmp2.price = 20;
-        tmp2.setDesc(new String[]{"Everybody wants more TRIANGLEZZ, right?",
+        tmp2.limit = 40;
+        tmp2.setDesc(new String[]{"Will get more TRIANGLEZZ, huh",
                 "You will get one more automatic TRIANGLE",
                 "dead triangles for it"});
         buttons.add(tmp2);
-        ShopButton tmp3 = new ShopButton(GameRenderer.WIDTH/5, 350, "Upgrade automatic") {
+        ShopButton tmp3 = new ShopButton(x + 85, 350, "Upgrade automatic") {
             @Override
             public void action() {
                 if (world.money >= price) {
-                    damage += coef;
+                    cd -= coef;
                     update();
                     world.money -= price;
                     price *= 1.5;
@@ -87,16 +108,16 @@ public class GameShop {
             }
         };
         tmp3.price = 15;
-        tmp3.coef = 1;
+        tmp3.coef = 0.07f;
         tmp3.setDesc(new String[]{"More powerfull automatic TRIANGLE",
-                " more point to damage for automatic!",
+                " less seconds cooldown of automatic!",
                 " dead triangles for it"});
         buttons.add(tmp3);
     }
 
     public void update() {
         for (Spawner sp : spawners) {
-            sp.damage = damage;
+            sp.setCd(cd);
         }
     }
 
@@ -107,6 +128,8 @@ public class GameShop {
             } else {
                 b.active = true;
             }
+            if (b instanceof ShopButton && ((ShopButton) b).clicked >= ((ShopButton) b).limit)
+                b.active = false;
         }
     }
 
@@ -114,7 +137,7 @@ public class GameShop {
         checkAvialables();
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(new Color(37 / 255f, 40 / 255f, 80 / 255f, 1));
-        sr.rect(50, 50, GameRenderer.WIDTH - 100, GameRenderer.HEIGHT - 100);
+        sr.rect(x, y, width, height);
         sr.end();
         for (Button b : buttons) {
             sr.begin(ShapeRenderer.ShapeType.Filled);

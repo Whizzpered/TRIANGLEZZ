@@ -12,7 +12,7 @@ import com.mygdx.game.shapes.Spawner;
 public class InputHandler implements InputProcessor {
 
     GameWorld world;
-    int price = 10;
+    //int price = 10;
 
     public InputHandler(GameWorld world) {
         this.world = world;
@@ -20,6 +20,14 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if(world.lose){
+            for (Button b : GameScreen.over.buttons) {
+                if (b.pressed(screenX, screenY)) {
+                    return true;
+                }
+            }
+            return false;
+        }
         if (GameScreen.shop.isShowing()) {
             for (Button b : GameScreen.shop.buttons) {
                 if (b.pressed(screenX, screenY)) {
@@ -32,7 +40,7 @@ public class InputHandler implements InputProcessor {
                     return true;
                 }
             }
-            if (!world.enemy.generating) {
+            if (!world.enemy.generating && !world.paused) {
                 world.createShell(screenX, screenY, world.damage);
             }
         }

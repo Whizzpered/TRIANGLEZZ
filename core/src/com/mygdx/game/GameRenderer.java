@@ -12,7 +12,7 @@ import com.mygdx.game.gui.Button;
 import com.mygdx.game.shapes.Triangle;
 
 /**
- * Created by Whizzpered on 01.05.2018.
+ * Created by Taster on 01.05.2018.
  * Only for uncommercial and learnin use <3;
  */
 public class GameRenderer {
@@ -90,7 +90,6 @@ public class GameRenderer {
             new Color(102 / 255f, 102 / 255f, 102 / 255f, 1),   //3
             new Color(153 / 255f, 153 / 255f, 153 / 255f, 1),   //4
             new Color(204 / 255f, 204 / 255f, 204 / 255f, 1)    //5
-
     };
 
 
@@ -128,10 +127,12 @@ public class GameRenderer {
         font.setColor(Color.WHITE);
         font.draw(batch, (int) fps + "fps", 10, 10);
         font.setColor(Color.GREEN);
-        font.draw(batch, world.money + "", WIDTH / 2 - 28, 10);
+        layout.setText(font, world.money + "");
+        font.draw(batch, world.money + "", WIDTH / 2 - layout.width / 2, 10);
         font.setColor(Color.WHITE);
         font.draw(batch, world.enemy.lvl + "", WIDTH - 28, 10);
         font.setColor(Color.WHITE);
+
         for (Button b : world.buttons) {
             layout.setText(font, b.getName());
             font.draw(batch, b.getName(), b.getCenter().x - (layout.width / 2),

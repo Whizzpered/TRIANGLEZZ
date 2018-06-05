@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
- * Created by Whizzpered on 01.06.2018.
+ * Created by Whizzpered on 30.05.2018.
  * Only for uncommercial and learnin use <3;
  */
 public class Description {
@@ -21,7 +21,7 @@ public class Description {
     }
 
     public void update() {
-        vars[0] = String.valueOf((int) parent.coef);
+        vars[0] = String.valueOf(parent.coef);
         vars[1] = String.valueOf(parent.price);
     }
 
@@ -57,7 +57,7 @@ public class Description {
                 parent.getCenter().y - parent.getHeight() / 2);
         for (int i = 1; i < text.length; i++) {
             int delta = 0;
-            if (Integer.parseInt(vars[i - 1]) != 0) {
+            if (Double.parseDouble(vars[i - 1]) != 0) {
                 font.draw(batch, vars[i - 1], parent.getCenter().x + parent.getWidth() / 2 + 20,
                         parent.getCenter().y - parent.getHeight() / 2 + ((font.getLineHeight()) * i));
                 delta = vars[i - 1].toCharArray().length * 9;

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.mygdx.game.shapes.Point;
 
 /**
- * Created by Whizzpered on 01.05.2018.
+ * Created by Whizzpered on 30.05.2018.
  * Only for uncommercial and learnin use <3;
  */
 public abstract class Button {
@@ -63,7 +63,7 @@ public abstract class Button {
 
     public Color getColor() {
         if (active) return color;
-        else return new Color(color.r / 1.3f, color.g / 1.3f, color.b / 1.3f, 1);
+        else return new Color(color.r / 1.5f, color.g / 1.5f, color.b / 1.5f, 1);
     }
 
     public void setColor(Color color) {

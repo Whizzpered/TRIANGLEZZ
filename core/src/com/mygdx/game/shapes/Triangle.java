@@ -14,7 +14,7 @@ import java.util.Random;
 public class Triangle {
 
     public Point vertex[], center;       // Points of Triangle
-    public int st;                      // Radius of circle with our triangle
+    public float st;                      // Radius of circle with our triangle
     protected double angle, speed;
     protected double acc, growAcc = 4.0 / 3.0; // Angle of rotation, Speed and accelerations
     private double gr;                          // variable for growing. Go on, fellow stalker

@@ -45,6 +45,7 @@ public class Shell extends Triangle {
 
     public void attack() {
         for (Part p : world.enemy.getParts()) {
+            eps = (int)Math.sqrt(Math.pow(p.st-10, 2) + Math.pow(st, 2));
             if (center.isClose(p.center, eps)) {
                 p.hit(damage);
                 moveTarget = null;

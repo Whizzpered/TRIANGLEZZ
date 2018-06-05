@@ -1,9 +1,6 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.mygdx.game.gui.Button;
-import com.mygdx.game.gui.GameShop;
 import com.mygdx.game.shapes.*;
 
 import java.util.ArrayList;
@@ -15,15 +12,14 @@ import java.util.ArrayList;
 public class GameWorld {
 
     public ArrayList<Triangle> trias = new ArrayList<Triangle>();      // List of our TRIANGLEZZ
-
     public ArrayList<Button> buttons = new ArrayList<Button>();     // Still crap and not using
     public Boss enemy;
-    public int money;
+    public int money, killed;
     public GameShop shop;
-    Preferences prefs = Gdx.app.getPreferences("Game Preferences");
-    public boolean rot = true;
+    public boolean rot, killin;
     public int damage;
-    GameScreen main;
+    public GameScreen main;
+    public boolean paused, lose;
 
     // Casting our ArrayList to Array to prevent some exceptions
     public Triangle[] getTrias() {
@@ -61,8 +57,15 @@ public class GameWorld {
         tr.st = 30;
         tr.setMoveTarget(GameRenderer.WIDTH / 2, GameRenderer.HEIGHT / 2);
         tr.enable();
-        tr.rotate(0);
         shop.spawners.add(tr);
+        int n = shop.spawners.size();
+        double ang = Math.PI / (n / 2.0), z = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            shop.spawners.get(i).build(z);
+            z += ang;
+        }
+        tr.build(0);
+        tr.build();
         trias.add(tr);
     }
 
@@ -78,19 +81,26 @@ public class GameWorld {
 
     }
 
-    public void save() {
-
-    }
-
-    public void load() {
-        //if(prefs)
+    public void lose() {
+        paused = true;
+        lose = true;
+        main.lose();
     }
 
     public void initialize(GameShop shop) {
-        enemy = new Boss(this, GameRenderer.WIDTH / 2, GameRenderer.HEIGHT / 2);
-        enemy.generate();
+        trias.clear();
+        buttons.clear();
+        if (enemy == null) enemy = new Boss(this, GameRenderer.WIDTH / 2, GameRenderer.HEIGHT / 2);
+        else enemy.regenerate();
+
         this.shop = shop;
         damage = 1;
+        money = 0;
+        killed = 0;
+        rot = true;
+        killin = true;
+        paused = false;
+        lose = false;
         buttons.add(new Button(100, GameRenderer.HEIGHT - 50, "Shop") {
             @Override
             public void action() {
@@ -107,25 +117,23 @@ public class GameWorld {
         buttons.add(new Button(GameRenderer.WIDTH - 100, GameRenderer.HEIGHT - 50, "Exit") {
             @Override
             public void action() {
-                main.dispose();
-                System.exit(0);
+                main.save(false);
+                main.exit();
             }
         });
+        enemy.generate();
     }
-
-    double z = 0;  //TEMP
 
     //Here's cycle of our logic and processing all object's
     public void update(float delta) {
-        for (Triangle tr : getTrias()) {
-            if (!tr.dead) tr.update(delta);
-            else {
-                trias.remove(tr);
+        if (!paused) {
+            for (Triangle tr : getTrias()) {
+                if (!tr.dead) tr.update(delta);
+                else {
+                    trias.remove(tr);
+                }
             }
+            enemy.update(delta);
         }
-        enemy.update(delta);
-        //circlin(z);
-        z += (Math.PI * 2) / 190;
     }
-
 }

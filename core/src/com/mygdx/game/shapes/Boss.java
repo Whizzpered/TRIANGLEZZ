@@ -11,16 +11,16 @@ import java.util.ArrayList;
  */
 public class Boss extends Triangle {
 
-    private ArrayList<Part> parts;
+    private ArrayList<Part> parts = new ArrayList<Part>();
+    ;
     public boolean generating, init;
     double z = 0;  //TEMP
-    private double cd, energy, coef;
+    private double cd, energy;
     public int lvl, wave;
 
     public Boss(GameWorld world, int x, int y) {
         super(world, x, y);
-        parts = new ArrayList<Part>();
-        lvl = 100;
+        lvl = 50;
     }
 
     public Part[] getParts() {
@@ -40,6 +40,13 @@ public class Boss extends Triangle {
         parts.remove(t);
     }
 
+    public void regenerate() {
+        lvl = 1;
+        parts.clear();
+        //parts.clear();
+        generate();
+    }
+
     public void generate() {
         wave = 0;
         z = 0;
@@ -56,12 +63,11 @@ public class Boss extends Triangle {
             generateEarly();
             generating = false;
         }
-        //coef = 1.0;
     }
 
     public void circlin(double z) {
         int n = Math.min(Math.max(lvl / 3, 1), 16);
-        if(!init)wave++;
+        if (!init) wave++;
         for (int i = 0; i < n; i++) {
             double c, s;
             double r = GameRenderer.WIDTH / 3;
@@ -119,6 +125,7 @@ public class Boss extends Triangle {
 
     public void die() {
         lvl++;
+        world.main.save(false);
         generate();
     }
 

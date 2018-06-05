@@ -29,15 +29,20 @@ public class Spawner extends Triangle {
     public void enable() {
         setGr(Math.PI / 2);
         eps = 27;
-        damage = world.shop.damage;
+        setCd(world.shop.cd);
         build();
     }
 
-    public void rotate(float delta){
-        double r = GameRenderer.WIDTH / 2;
+    public void rotate(float delta) {
+        build(ang);
+        ang -= delta / 3;
+    }
+
+    public void build(double ang) {
+        this.ang = ang;
+        double r = GameRenderer.WIDTH / 2 - 20;
         center.x = GameRenderer.WIDTH / 2 + (int) Math.round((Math.cos(ang)) * r);
-        center.y = GameRenderer.HEIGHT / 2 - (int) Math.round((Math.sin(ang)) * r);
-        ang += delta / 3;
+        center.y = GameRenderer.HEIGHT / 2 - (int) Math.round((Math.sin(ang)) * r * 1.4);
     }
 
     @Override
@@ -46,13 +51,18 @@ public class Spawner extends Triangle {
             rotate(delta);
         }
         build();
-        if (energy >= cd) {
+        if (energy >= cd && world.killin) {
             world.createShell((int) center.x, (int) center.y, damage);
             energy -= cd;
         }
-
+        if (energy >= cd) {
+            energy -= cd;
+        }
         energy += delta;
 
     }
 
+    public void setCd(double cd) {
+        this.cd = cd;
+    }
 }
