@@ -9,7 +9,7 @@ public abstract class ShopButton extends Button {
     public int price;
     public float coef;
     private Description desc;
-    public int limit = 10, clicked = 0;
+    public int limit, clicked = 0;
 
     public ShopButton(int x, int y, String name) {
         super(x, y, name);
@@ -26,17 +26,15 @@ public abstract class ShopButton extends Button {
         desc.update();
     }
 
-    public void action(){
+    public void action() {
 
     }
 
     @Override
     public boolean pressed(int x, int y) {
-        if (clicked < limit) {
-            boolean b = super.pressed(x, y);
-            desc.update();
-            if (b) clicked++;
-            return b;
-        } else return false;
+        boolean b = super.pressed(x, y);
+        desc.update();
+        if (b) clicked++;
+        return b;
     }
 }

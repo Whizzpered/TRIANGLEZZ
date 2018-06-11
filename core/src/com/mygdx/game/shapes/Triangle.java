@@ -35,7 +35,7 @@ public class Triangle {
         if (primaryAttribute < GameRenderer.colors.length) {
             color = GameRenderer.colors[primaryAttribute];
         } else {
-            color = GameRenderer.colors[GameRenderer.colors.length-1];
+            color = GameRenderer.colors[GameRenderer.colors.length - 1];
         }
     }
 
@@ -98,8 +98,8 @@ public class Triangle {
         for (Triangle t : children) {
             t.setMoveTarget((int) (target.x + 2), (int) (target.y + 2));
         }
-        if(target!=null)
-        setAngle(Math.atan2(moveTarget.y - center.y, moveTarget.x - center.x));
+        if (target != null)
+            setAngle(Math.atan2(moveTarget.y - center.y, moveTarget.x - center.x));
     }
 
     public void setGr(double gr) {
@@ -120,8 +120,8 @@ public class Triangle {
         while (i < n) {
             c = Math.cos(z);
             s = Math.sin(z);
-            vertex[i].x = center.x + (int) Math.round((c) * r);
-            vertex[i].y = center.y - (int) Math.round((s) * r);
+            vertex[i].x = center.x + Math.round((c) * r);
+            vertex[i].y = center.y - Math.round((s) * r);
             z += ang;
             i++;
         }
@@ -151,7 +151,7 @@ public class Triangle {
     }
 
     public void update(float delta) {
-        if(!world.enemy.generating) {
+        if (!world.enemy.generating) {
             move(delta);
             if (moveTarget == null) {
                 grow(delta);

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class Boss extends Triangle {
 
     private ArrayList<Part> parts = new ArrayList<Part>();
-    ;
     public boolean generating, init;
     double z = 0;  //TEMP
     private double cd, energy;
@@ -20,7 +19,7 @@ public class Boss extends Triangle {
 
     public Boss(GameWorld world, int x, int y) {
         super(world, x, y);
-        lvl = 50;
+        lvl = 1;
     }
 
     public Part[] getParts() {
@@ -40,14 +39,14 @@ public class Boss extends Triangle {
         parts.remove(t);
     }
 
-    public void regenerate() {
-        lvl = 1;
+    public void regenerate(int lvl) {
+        this.lvl = lvl;
         parts.clear();
-        //parts.clear();
         generate();
     }
 
     public void generate() {
+        System.out.println(lvl);
         wave = 0;
         z = 0;
         for (Triangle s : world.getTrias()) {
@@ -61,7 +60,7 @@ public class Boss extends Triangle {
         cd = 2 / (double) (Math.min(lvl, 40));
         if (lvl < 5) {
             generateEarly();
-            generating = false;
+            //generating = false;
         }
     }
 
@@ -70,7 +69,7 @@ public class Boss extends Triangle {
         if (!init) wave++;
         for (int i = 0; i < n; i++) {
             double c, s;
-            double r = GameRenderer.WIDTH / 3;
+            double r = GameRenderer.WIDTH / 4;
             c = Math.cos(z);
             s = Math.sin(z);
             int x = (int) center.x + (int) Math.round((c) * r);
@@ -85,42 +84,22 @@ public class Boss extends Triangle {
             world.createPart(this, (int) center.x, (int) center.y);
         else {
             int n = lvl;
-            for (int j = 0; j < (int) (Math.round(n / 2)); j++) {
-                double r = GameRenderer.WIDTH / (3 * Math.max(j + 1, 1));
+            for (int j = 0; j < (Math.round(n / 2)); j++) {
+                double r = GameRenderer.WIDTH / 4;
                 for (int i = 0; i < n; i++) {
                     double c, s;
                     c = Math.cos(z);
                     s = Math.sin(z);
-                    int x = (int) center.x + (int) Math.round((c) * r);
-                    int y = (int) center.y - (int) Math.round((s) * r);
+                    int x = (int) (center.x + Math.round((c) * r));
+                    int y = (int) (center.y - Math.round((s) * r));
                     world.createPart(this, x, y);
                     z += Math.PI * 2 / n;
                 }
             }
         }
-        for (Part p : parts) {
-            p.setMoveTarget(null);
-        }
-    }
-
-    // Funcction to create triangle from smaller TRIANGLEZZZ
-    public void doTringle(int n, int x, int y) {
-        int sr = 30;
-        int is = n;
-        for (int i = 0; i < n; i++) {
-            world.createPart(this, x, y);
-        }
-        while (n-- > 0) {
-            for (int i = 0; i < n; i++) {
-                int nx = (int) Math.round(x + (sr * 10.227 / 12) * (is - n) + (3 * (sr) / Math.sqrt(3)) * (i + 1)),
-                        ny = y - (sr / 2) * (is - n) - sr * (is - n - 1);
-                world.createPart(this, nx, ny);
-                nx = (int) Math.round(x + sr * 10 / 12 * (is - n) + (3 * (sr) / Math.sqrt(3)) * (i + 1));
-                ny = y - (sr * 3 / 2) * (is - n);
-                world.createPart(this, nx, ny);
-            }
-        }
-        //for (int i = 0; i < n; i++) world.createPart(this, x, y);
+        //for (Part p : parts) {
+        //p.setMoveTarget(null);
+        //}
     }
 
     public void die() {
@@ -133,7 +112,7 @@ public class Boss extends Triangle {
     public void update(float delta) {
         if (generating) {
             if (energy >= cd) {
-                circlin(z);
+                if (lvl >= 5) circlin(z);
                 energy -= cd;
             }
             energy += delta;

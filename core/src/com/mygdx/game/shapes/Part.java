@@ -1,7 +1,5 @@
 package com.mygdx.game.shapes;
 
-import com.mygdx.game.GameRenderer;
-
 import java.util.Random;
 
 /**
@@ -13,8 +11,6 @@ public class Part extends Triangle {
     private Boss parent;
     private boolean initiate;
     private int hp, maxhp, grdelta = 10;
-    private double cooldown, gracc;
-    boolean growing, wt;
 
     public int getHP() {
         return hp;
@@ -32,13 +28,13 @@ public class Part extends Triangle {
     }
 
     public Part(Boss boss, int x, int y) {
-        //super(boss.world, (int) boss.center.x, (int) boss.center.y);
-        super(boss.world, (int) x, (int) y);
+        super(boss.world, (int) boss.center.x, (int) boss.center.y);
+        //super(boss.world,  x, y);
         parent = boss;
-        //setMoveTarget(x, y);
-        setMoveTarget((int) boss.center.x, (int) boss.center.y);
+        setMoveTarget(x, y);
+        //setMoveTarget((int) boss.center.x, (int) boss.center.y);
         initiate = boss.init;
-        setSpeed(100f);
+        setSpeed(90f);
         if (boss.lvl <= 52) {
             hp = Math.min(boss.lvl, 50);
         } else {
@@ -54,6 +50,9 @@ public class Part extends Triangle {
         boss.init = false;
     }
 
+    public void agression(float delta) {
+
+    }
 
     public void move(float delta) {
         if (hp > 0) {
@@ -64,49 +63,21 @@ public class Part extends Triangle {
                 }
             } else {
                 double r = center.calculateDistance(parent.center);
-                center.x = parent.center.x + (int) Math.round((Math.cos(getAngle())) * r);
-                center.y = parent.center.y - (int) Math.round((Math.sin(getAngle())) * r);
+                center.x = parent.center.x + Math.round((Math.cos(getAngle())) * r);
+                center.y = parent.center.y - Math.round((Math.sin(getAngle())) * r);
                 setAngle(getAngle() + delta / 2);
                 build();
+                agression(delta);
             }
             if (getGr() < Math.PI / 2) grow(delta);
-        }
-    }
-
-    public void up(float delta) {
-        if (!growing && cooldown >= 2f) {
-            cooldown = 0f;
-            growing = true;
-            wt = true;
-            growAcc = 0;
-        }
-        if (growing) {
-            if (wt) {
-                growAcc -= delta * 4.0 / 3.0;
-                st += (Math.sin(growAcc));
-                if (growAcc <= (Math.PI / 14) * (-1)) wt = false;
-            } else {
-                growAcc += delta * 4.0 / 3.0;
-                st += (Math.sin(growAcc));
-                if (growAcc >= (Math.PI / 5)) growing = false;
-            }
-        } else {
-            cooldown += delta;
-        }
-        if (center.x + st >= GameRenderer.WIDTH) {
-            parent.world.lose();
         }
     }
 
 
     @Override
     public void update(float delta) {
-        if (hp > 0) {
-            move(delta);
-            up(delta);
-        }
+        move(delta);
         if (hp <= 0) {
-            move(delta);
             grow(delta);
         }
     }

@@ -14,6 +14,7 @@ public class GameWorld {
     public ArrayList<Triangle> trias = new ArrayList<Triangle>();      // List of our TRIANGLEZZ
     public ArrayList<Button> buttons = new ArrayList<Button>();     // Still crap and not using
     public Boss enemy;
+    public Barrier barrier;
     public int money, killed;
     public GameShop shop;
     public boolean rot, killin;
@@ -47,7 +48,7 @@ public class GameWorld {
 
     public void createPart(Boss boss, int x, int y) {
         Part tr = new Part(boss, x, y);
-        tr.st = 30;
+        tr.st = 25;
         boss.addpart(tr);
         trias.add(tr);
     }
@@ -78,7 +79,6 @@ public class GameWorld {
     // Huh, empty constructor. Lame
     public GameWorld(GameScreen screen) {
         main = screen;
-
     }
 
     public void lose() {
@@ -91,8 +91,7 @@ public class GameWorld {
         trias.clear();
         buttons.clear();
         if (enemy == null) enemy = new Boss(this, GameRenderer.WIDTH / 2, GameRenderer.HEIGHT / 2);
-        else enemy.regenerate();
-
+        else enemy.regenerate(1);
         this.shop = shop;
         damage = 1;
         money = 0;
@@ -101,9 +100,11 @@ public class GameWorld {
         killin = true;
         paused = false;
         lose = false;
+        barrier = new Barrier(this);
         buttons.add(new Button(100, GameRenderer.HEIGHT - 50, "Shop") {
             @Override
             public void action() {
+                paused = true;
                 GameScreen.shop.setVisibility(true);
             }
         });
@@ -121,7 +122,6 @@ public class GameWorld {
                 main.exit();
             }
         });
-        enemy.generate();
     }
 
     //Here's cycle of our logic and processing all object's
@@ -134,6 +134,11 @@ public class GameWorld {
                 }
             }
             enemy.update(delta);
+            if (barrier.hp <= 0) {
+                lose();
+            } else {
+                barrier.update(delta);
+            }
         }
     }
 }

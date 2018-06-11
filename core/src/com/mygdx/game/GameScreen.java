@@ -31,7 +31,8 @@ public class GameScreen implements Screen {
         Gdx.input.setInputProcessor(handler);  // Setting input of application to our Handler
         world.initialize(shop);
         shop.initialize();
-        //load();
+        load();
+        world.enemy.generate();
         starting = false;
     }
 
@@ -43,10 +44,12 @@ public class GameScreen implements Screen {
             int damage = prefs.getInteger("Damage", 0);
             int autos = prefs.getInteger("Automats", 0);
             int cd = prefs.getInteger("AutomatsCD", 0);
+            int autodmg = prefs.getInteger("AutomatsDMG", 0);
+            int barrier = prefs.getInteger("Barrier", 0);
             for (int i = 0; i < damage; i++) {
-                shop.get("Upgrade attack").action();
-                shop.get("Buy automatic").getDesc().update();
-                shop.get("Upgrade attack").clicked++;
+                shop.get("DAMAGE").action();
+                shop.get("DAMAGE").getDesc().update();
+                shop.get("DAMAGE").clicked++;
             }
             for (int i = 0; i < autos; i++) {
                 shop.get("Buy automatic").action();
@@ -54,13 +57,22 @@ public class GameScreen implements Screen {
                 shop.get("Buy automatic").clicked++;
             }
             for (int i = 0; i < cd; i++) {
-                shop.get("Upgrade automatic").action();
-                shop.get("Buy automatic").getDesc().update();
-                shop.get("Upgrade automatic").clicked++;
+                shop.get("Auto SPEED").action();
+                shop.get("Auto SPEED").getDesc().update();
+                shop.get("Auto SPEED").clicked++;
+            }
+            for (int i = 0; i < autodmg; i++) {
+                shop.get("Auto DAMAGE").action();
+                shop.get("Auto DAMAGE").getDesc().update();
+                shop.get("Auto DAMAGE").clicked++;
+            }
+            for (int i = 0; i < barrier; i++) {
+                shop.get("Barrier HP").action();
+                shop.get("Barrier HP").getDesc().update();
+                shop.get("Barrier HP").clicked++;
             }
             world.money = money;
             world.enemy.lvl = lvl;
-            world.enemy.generate();
         }
     }
 
@@ -72,7 +84,9 @@ public class GameScreen implements Screen {
             prefs.putInteger("Level", world.enemy.lvl);
             prefs.putInteger("Damage", world.damage);
             prefs.putInteger("Automats", shop.spawners.size());
-            prefs.putInteger("AutomatsCD", shop.get("Upgrade automatic").clicked);
+            prefs.putInteger("AutomatsCD", shop.get("Auto SPEED").clicked);
+            prefs.putInteger("AutomatsDMG", shop.get("Auto DAMAGE").clicked);
+            prefs.putInteger("Barrier", shop.get("Barrier HP").clicked);
             prefs.putInteger("Money", world.money);
         }
     }
@@ -81,6 +95,7 @@ public class GameScreen implements Screen {
         starting = true;
         world.initialize(shop);
         shop.initialize();
+        world.enemy.generate();
         starting = false;
     }
 

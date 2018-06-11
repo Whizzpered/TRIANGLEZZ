@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.mygdx.game.GameRenderer;
-import com.mygdx.game.GameWorld;
 import com.mygdx.game.gui.Button;
 import com.mygdx.game.gui.ShopButton;
 import com.mygdx.game.shapes.Spawner;
@@ -23,14 +21,14 @@ public class GameShop {
     public ArrayList<Spawner> spawners = new ArrayList<Spawner>();
     private boolean show;
     private GameWorld world;
-    public double cd;
+    public double cd, damage;
     GlyphLayout layout = new GlyphLayout();
     private int x, y, width, height;
 
-    public ShopButton get(String name){
+    public ShopButton get(String name) {
         for (Button b : buttons) {
-            if(b instanceof ShopButton && b.getName().equals(name)){
-                return (ShopButton)b;
+            if (b instanceof ShopButton && b.getName().equals(name)) {
+                return (ShopButton) b;
             }
         }
         return null;
@@ -54,16 +52,18 @@ public class GameShop {
         width = GameRenderer.WIDTH - 100;
         height = GameRenderer.HEIGHT - 100;
         cd = 1;
+        damage = 1;
         buttons.clear();
         spawners.clear();
         buttons.add(new Button(GameRenderer.WIDTH / 2, GameRenderer.HEIGHT - 50, "Confirm") {
             @Override
             public void action() {
                 setVisibility(false);
+                world.paused = false;
             }
         });
 
-        ShopButton tmp1 = new ShopButton(x + 85, 150, "Upgrade attack") {
+        ShopButton tmp1 = new ShopButton(x + 85, 150, "DAMAGE") {
             @Override
             public void action() {
                 if (world.money >= price) {
@@ -96,7 +96,7 @@ public class GameShop {
                 "You will get one more automatic TRIANGLE",
                 "dead triangles for it"});
         buttons.add(tmp2);
-        ShopButton tmp3 = new ShopButton(x + 85, 350, "Upgrade automatic") {
+        ShopButton tmp3 = new ShopButton(x + 85, 350, "Auto SPEED") {
             @Override
             public void action() {
                 if (world.money >= price) {
@@ -113,11 +113,46 @@ public class GameShop {
                 " less seconds cooldown of automatic!",
                 " dead triangles for it"});
         buttons.add(tmp3);
+        ShopButton tmp4 = new ShopButton(x + 85, 450, "Auto DAMAGE") {
+            @Override
+            public void action() {
+                if (world.money >= price) {
+                    damage += coef;
+                    update();
+                    world.money -= price;
+                    price *= 1.5;
+                }
+            }
+        };
+        tmp4.price = 15;
+        tmp4.coef = 1f;
+        tmp4.setDesc(new String[]{"More powerfull automatic TRIANGLE",
+                " more damage of automatic!",
+                " dead triangles for it"});
+        buttons.add(tmp4);
+        ShopButton tmp5 = new ShopButton(x + 85, 550, "Barrier HP") {
+            @Override
+            public void action() {
+                if (world.money >= price) {
+                    world.barrier.maxhp += coef;
+                    update();
+                    world.money -= price;
+                    price *= 1.5;
+                }
+            }
+        };
+        tmp5.price = 20;
+        tmp5.coef = 50f;
+        tmp5.setDesc(new String[]{"Upgrade Barrier's capacity",
+                " more hp for him!",
+                " dead triangles for it"});
+        buttons.add(tmp5);
     }
 
     public void update() {
         for (Spawner sp : spawners) {
             sp.setCd(cd);
+            sp.damage = (int) damage;
         }
     }
 
@@ -128,8 +163,6 @@ public class GameShop {
             } else {
                 b.active = true;
             }
-            if (b instanceof ShopButton && ((ShopButton) b).clicked >= ((ShopButton) b).limit)
-                b.active = false;
         }
     }
 

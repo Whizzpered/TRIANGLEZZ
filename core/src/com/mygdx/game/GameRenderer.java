@@ -118,22 +118,23 @@ public class GameRenderer {
             shapeRenderer.setColor(tr.color);
             shapeRenderer.triangle(tr.vertex[0].x, tr.vertex[0].y, tr.vertex[1].x, tr.vertex[1].y, tr.vertex[2].x, tr.vertex[2].y);
         }
-        for (Button b : world.buttons) {
+        shapeRenderer.end();
+        world.barrier.render(shapeRenderer, font, batch);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (Button b : world.buttons) {                              // Rendering all buttons
             shapeRenderer.setColor(b.getColor());
             shapeRenderer.rect(b.getCenter().x - b.getWidth() / 2, b.getCenter().y - b.getHeight() / 2, b.getWidth(), b.getHeight());
         }
-        shapeRenderer.end();                                           // Ending renderer of shapes
+        shapeRenderer.end();                                           // Ending renderer of shapes and gui
         batch.begin();                                                 // Starting renderer of font
-        font.setColor(Color.WHITE);
-        font.draw(batch, (int) fps + "fps", 10, 10);
-        font.setColor(Color.GREEN);
+        font.setColor(Color.GREEN);                                    // money
         layout.setText(font, world.money + "");
         font.draw(batch, world.money + "", WIDTH / 2 - layout.width / 2, 10);
-        font.setColor(Color.WHITE);
+        font.setColor(Color.WHITE);                                    // level
         font.draw(batch, world.enemy.lvl + "", WIDTH - 28, 10);
         font.setColor(Color.WHITE);
 
-        for (Button b : world.buttons) {
+        for (Button b : world.buttons) {                                // Button's description
             layout.setText(font, b.getName());
             font.draw(batch, b.getName(), b.getCenter().x - (layout.width / 2),
                     b.getCenter().y - font.getLineHeight() / 2);
